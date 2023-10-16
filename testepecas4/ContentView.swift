@@ -8,14 +8,67 @@
 import SwiftUI
 
 struct ContentView: View {
-    var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundColor(.accentColor)
-            Text("Hello, world!")
+    
+    @State var angle: Angle = Angle(degrees: 0)
+    
+    var shouldRotateText: Bool {
+            // Determine se o texto deve ser rotacionado com base na orientação da ZStack
+            return abs(angle.degrees) > 45
         }
-        .padding()
+    
+    var body: some View {
+        ZStack {
+            
+            VStack {
+                Rectangle()
+                    .fill(Color.blue)
+                    .frame(width: 100, height: 100)
+//                    .cornerRadius(15)
+                    .overlay(
+                        Text("3+3")
+                            .font(.title2)
+                            .foregroundColor(Color.black)
+                            .rotationEffect(Angle(degrees: angle.degrees), anchor: .center)
+                    )
+                
+                
+//
+                
+                Rectangle()
+                    .fill(Color.red)
+                    .frame(width: 100, height: 100)
+//                    .cornerRadius(15)
+                    .overlay(
+                        Text("3+3")
+                            .font(.title2)
+                            .foregroundColor(Color.black)
+                            .rotationEffect(Angle(degrees: angle.degrees), anchor: .center)
+                    )
+            }
+            
+
+        }
+        .background(Color.black)
+        .cornerRadius(15)//
+        .overlay(
+            RoundedRectangle(cornerRadius: 10)
+                .stroke(Color.black, lineWidth: 5)
+        )
+        .rotationEffect(angle) // Aplicar rotação à ZStack que contém ambos os retângulos
+                .gesture(
+                    RotationGesture()
+                        .onChanged { value in
+                            angle = value
+                            
+                        }
+                        .onEnded { value in
+                            withAnimation(.spring()) {
+                                angle = Angle(degrees: 0)
+                            }
+                            
+                        }
+                )
+            
     }
 }
 
